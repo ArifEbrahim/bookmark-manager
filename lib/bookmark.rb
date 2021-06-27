@@ -32,4 +32,15 @@ class Bookmark
     @title = title
     @id = id
   end
+
+  def self.delete(id:)
+    if ENV['ENVIRONMENT'] == 'test'
+      con = PG.connect(dbname: 'bookmark_manager_test')
+    else
+      con = PG.connect(dbname: 'bookmark_manager')
+    end
+
+    con.exec("DELETE FROM bookmarks WHERE id = #{id}")
+  end
+
 end
