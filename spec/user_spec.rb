@@ -16,7 +16,7 @@ RSpec.describe User do
 
   describe '.find' do
     it 'finds a user by ID' do
-      p user = User.create(email: 'test@example.com', password: 'password123')
+      user = User.create(email: 'test@example.com', password: 'password123')
       result = User.find(user.id)
 
 
@@ -26,6 +26,15 @@ RSpec.describe User do
 
     it 'returns nil if there is no ID given' do
       expect(User.find(nil)).to eq(nil)
+    end
+  end
+
+  describe '.authenticate' do
+    it 'returns a user if one exsits' do
+      user = User.create(email: 'test@example.com', password: 'password123')
+      authenticated_user = User.authenticate(email: 'test@example.com', password: 'password123')
+  
+      expect(authenticated_user.id).to eq user.id
     end
   end
 
