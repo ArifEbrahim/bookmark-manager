@@ -1,9 +1,11 @@
 require './lib/database_connection.rb'
+require 'bcrypt'
 
 class User
 
   def self.create(email:, password:)
-    result = DatabaseConnection.query("INSERT INTO users (email, password) VALUES ('#{email}', '#{password}') RETURNING *;")
+    encrypted_password = BCrypt::Password.create(password)
+    result = DatabaseConnection.query("INSERT INTO users (email, password) VALUES ('#{email}', '#{encrypted_password}') RETURNING *;")
     User.new(email: result[0]['email'], id: result[0]['id'])    
   end
 
@@ -23,8 +25,7 @@ class User
   def self.authenticate(email:, password:)
     result = DatabaseConnection.query("SELECT * FROM users WHERE email = '#{email}'")
     return unless result.any?
-    # return unless BCrypt::Password.new(result[0]['password']) == password
-    return unless result[0]['password'] == password
+    return unless BCrypt::Password.new(result[0]['password']) == password
     User.new(id: result[0]['id'], email: result[0]['email'])
   end
 
