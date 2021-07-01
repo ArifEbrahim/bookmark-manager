@@ -37,11 +37,18 @@ RSpec.describe User do
       expect(authenticated_user.id).to eq user.id
     end
 
-    it 'returns nil when no user found' do
+    it 'returns nil when email incorrect' do
       user = User.create(email: 'test@example.com', password: 'password123')
 
-      expect(User.authenticate(email: 'nottherightemail@me.com', password: 'password123')).to be_nil
+      expect(User.authenticate(email: 'nottherightemail@me.com', password: 'password123')).to eq(nil)
     end
+
+    it 'returns nil when password' do
+      user = User.create(email: 'test@example.com', password: 'password123')
+
+      expect(User.authenticate(email: 'test@example.com', password: 'wrong123')).to eq(nil)
+    end
+
   end
 
 
